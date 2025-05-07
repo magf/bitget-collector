@@ -1,0 +1,6 @@
+Package: bitget-collector
+Version: 1.0
+Architecture: amd64
+Maintainer: Maxim Gajdaj <maxim.gajdaj@gmail.com>
+Description: Bitget Trade Collector Service
+ Collects trade data from Bitget exchange via WebSocket and stores it in SQLite databases.

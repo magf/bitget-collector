@@ -1,0 +1,19 @@
+#!/bin/sh
+
+set -e
+
+# Create the bitget user if it doesn't exist
+if ! id -u bitget >/dev/null 2>&1; then
+    useradd -r -s /bin/false -d /nonexistent bitget
+    echo "Created user bitget"
+fi
+
+# Create the data directory if it doesn't exist
+if [ ! -d /var/lib/bitget-collector ]; then
+    mkdir -p /var/lib/bitget-collector
+    chown bitget:bitget /var/lib/bitget-collector
+    chmod 755 /var/lib/bitget-collector
+    echo "Created directory /var/lib/bitget-collector"
+fi
+
+exit 0

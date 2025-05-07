@@ -1,0 +1,12 @@
+[Unit]
+Description=Bitget Trade Collector for %i
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/collector -pair=%i
+Restart=always
+User=bitget
+WorkingDirectory=/var/lib/bitget-collector
+
+[Install]
+WantedBy=multi-user.target
