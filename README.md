@@ -1,4 +1,4 @@
-Bitget Trade Collector
+# Bitget Trade Collector
 Bitget Trade Collector is a Go-based application that collects real-time trade data from the Bitget cryptocurrency exchange via WebSocket and stores it in SQLite databases. Each trading pair (e.g., BTCUSDT, ETHUSDT) runs as an independent systemd service instance, ensuring fault isolation and scalability. The project is packaged as a DEB package for easy deployment on Debian/Ubuntu systems.
 Features
 
@@ -9,7 +9,7 @@ Includes optional debug logging for troubleshooting.
 Automated user and directory setup via DEB package installation scripts.
 Automatically starts a default BTCUSDT collector service upon installation.
 
-Prerequisites
+## Prerequisites
 
 Go 1.18 or later (for building from source).
 Debian/Ubuntu system for DEB package installation.
@@ -17,68 +17,100 @@ sqlite3 for querying the database.
 dpkg for building and installing the DEB package.
 Internet access to connect to the Bitget WebSocket API.
 
-Installation
-Building from Source
+## Installation
 
-Clone the repository:git clone https://github.com/magf/bitget-collector.git
+### Building from Source
+
+#### Clone the repository:
+
+```bash
+git clone https://github.com/magf/bitget-collector.git
 cd bitget-collector
+```
 
+#### Initialize Go modules and fetch dependencies:
 
-Initialize Go modules and fetch dependencies:go mod init bitget-collector
+```bash
+go mod init bitget-collector
 go get github.com/gorilla/websocket
 go get github.com/mattn/go-sqlite3
+```
+
+#### Build the binary:
+
+```bash
+make build
+```
 
 
-Build the binary:make build
-
-
-
-Building DEB Package
+#### Building DEB Package
 
 Ensure dpkg-deb is installed:
-sudo apt install dpkg
 
+```bash
+sudo apt install dpkg
+```
 
 Build the DEB package:
-make deb
 
+```bash
+make deb
+```
 
 Install the DEB package:
+
+```bash
 sudo dpkg -i bitget-collector.deb
+```
 
 The installation process will:
 
-Create the bitget system user.
-Set up the /var/lib/bitget-collector directory with appropriate permissions.
-Install the systemd template service.
-Automatically enable and start the collector@BTCUSDT service.
+- Create the bitget system user.
+- Set up the `/var/lib/bitget-collector` directory with appropriate permissions.
+- Install the systemd template service.
+- Automatically enable and start the collector@BTCUSDT service.
 
+### Running the Service
 
+Start a service instance for a specific trading pair (e.g., ETHUSDT):
 
-Running the Service
-
-Start a service instance for a specific trading pair (e.g., ETHUSDT):sudo systemctl start collector@ETHUSDT
+```bash
+sudo systemctl start collector@ETHUSDT
 sudo systemctl enable collector@ETHUSDT
+```
+
+Check the service status:
+
+```bash
+sudo systemctl status collector@ETHUSDT
+```
+
+View collected data:
+
+```bash
+sqlite3 /var/lib/bitget-collector/trades_ETHUSDT.db "SELECT * FROM trades LIMIT 10;"
+```
 
 
-Check the service status:sudo systemctl status collector@ETHUSDT
+## Usage
 
+### Run manually for testing with debug output:
 
-View collected data:sqlite3 /var/lib/bitget-collector/trades_ETHUSDT.db "SELECT * FROM trades LIMIT 10;"
+```bash
+./collector -pair=BTCUSDT -debug
+```
 
+### Use `make run` to run with the default pair (BTCUSDT):
 
+```bash
+make run
+```
 
-Usage
+### Data is stored in `/var/lib/bitget-collector/trades_<pair>.db.`
 
-Run manually for testing with debug output:./collector -pair=BTCUSDT -debug
+## Project Structure
 
-
-Use make run to run with the default pair (BTCUSDT): make run
-
-
-Data is stored in /var/lib/bitget-collector/trades_<pair>.db.
-
-Project Structure
+```text
 bitget-collector/
 ├── cmd/
 │   └── collector/        # Application entry point
@@ -92,10 +124,17 @@ bitget-collector/
 ├── go.mod                # Go module dependencies
 ├── go.sum                # Go dependency checksums
 └── .gitignore            # Git ignore rules
+```
 
-Contributing
+## Contributing
+
 Contributions are welcome! Please submit issues or pull requests to the repository. Ensure any changes are tested and follow the project's coding style.
-License
+
+## License
+
 This project is licensed under the MIT License. See the LICENSE file for details.
-Author
+
+## Author
+
 Maxim Gajdaj maxim.gajdaj@gmail.com
+
